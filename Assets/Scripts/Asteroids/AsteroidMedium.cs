@@ -11,6 +11,7 @@ public class AsteroidMedium : Asteroid
     {
         GameObject go = GameObject.Find("GameController");
         GameControl gControl = go.GetComponent<GameControl>();
+        gControl.gameScene.AssScore(15);
         if (gControl != null)
         {
             GameObject gameScene = this.gameObject.transform.parent.gameObject;

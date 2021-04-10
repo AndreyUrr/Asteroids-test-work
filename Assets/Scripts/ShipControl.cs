@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ShipControl : Unit
 {
+
+    private GameControl gControl;
+    [SerializeField]
     private int lives = 3;
     public int Lives { get { return lives; } set { lives = value; } }
     //private void OnTriggerEnter(Collider other)
@@ -22,9 +25,11 @@ public class ShipControl : Unit
         if (lives > 0)
         {
             lives--;
+            gControl.LiveControl(lives);
         }
         else
         {
+            gControl.GameOver();
             Destroy(this.gameObject);
         }
     }
@@ -32,7 +37,8 @@ public class ShipControl : Unit
     // Start is called before the first frame update
     void Start()
     {
-        
+        GameObject go = GameObject.Find("GameController");
+        gControl = go.GetComponent<GameControl>();
     }
 
     // Update is called once per frame

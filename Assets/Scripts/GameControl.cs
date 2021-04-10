@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 
 
@@ -14,6 +14,10 @@ public class GameControl : MonoBehaviour
     public GameObject sceneObjects;
 
 
+    public GameObject canvasGamingPart;
+    public GameObject canvasGameOverPart;
+
+    public GameObject pSpaceShip;
     public GameObject pAsterL1;
     public GameObject pAsterL2;
     public GameObject pAsterM1;
@@ -21,8 +25,12 @@ public class GameControl : MonoBehaviour
     public GameObject pAsterS1;
     public GameObject pAsterS2;
     public GameObject pStrike;
-    public UnityEngine.UI.Text labelToch;
-    public UnityEngine.UI.Text labelToch2;
+    public UnityEngine.UI.Text labelScore;
+
+    public GameObject live1;
+    public GameObject live2;
+    public GameObject live3;
+
 
     public StrikeTrigger strikeTrg;
     public StrikeTrigger toLeft;
@@ -32,7 +40,8 @@ public class GameControl : MonoBehaviour
 
     bool isGaming = false;
     bool isGameOver = false;
-    GameScene gameScene;
+    public bool IsGameOver { set { isGameOver = value; } get { return isGameOver; } }
+    public GameScene gameScene;
     //public Resolution[] resolutions = Screen.resolutions;
     //public float sceneWidth = Screen.width;
     //public float screenHeight = Screen.height;
@@ -45,6 +54,35 @@ public class GameControl : MonoBehaviour
     public Vector3 shipSpeedVector = new Vector3(0, 0, 0);
     public float aForceEngine = 1;
 
+
+    private void ClearGameZone()
+    {
+        shipSpeedVector = new Vector3(0, 0, 0);
+
+        //if (spaceShip != null)
+        //{
+        //    Destroy(spaceShip.gameObject);
+        //}
+
+        foreach (Transform t in sceneObjects.GetComponentInChildren<Transform>())
+        {
+            Asteroid aster = t.gameObject.GetComponent<Asteroid>();
+            if (aster != null)
+            {
+                Destroy(aster.gameObject);
+            }
+            else
+            {
+                StrikeControl sControl = t.gameObject.GetComponent<StrikeControl>();
+                if (sControl != null)
+                {
+                    Destroy(sControl.gameObject);
+                }
+            }
+
+        }
+    }
+
     public void StartNewGame()
     {
         mainMenu.enabled = false;
@@ -52,6 +90,16 @@ public class GameControl : MonoBehaviour
         gameScene = new GameScene();
         isGaming = true;
         isGameOver = false;
+        canvasGameOverPart.SetActive(false);
+        canvasGamingPart.SetActive(true);
+
+        ClearGameZone();
+
+        if (spaceShip == null)
+        {
+            spaceShip = Instantiate(pSpaceShip, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0));
+        }
+
 
         for (int i = 0; i < 3; i++)
         {
@@ -71,6 +119,34 @@ public class GameControl : MonoBehaviour
             sceneAster = Instantiate(pAsterS2, position, rotation) as GameObject;
 
         sceneAster.transform.SetParent(sceneObjects.transform);
+    }
+
+    public void LiveControl(int lives)
+    {
+        if (lives < 3)
+        {
+            live3.SetActive(false);
+        }
+        else
+        {
+            live3.SetActive(true);
+        }
+        if (lives < 2)
+        {
+            live2.SetActive(false);
+        }
+        else
+        {
+            live2.SetActive(true);
+        }
+        if (lives < 1)
+        {
+            live1.SetActive(false);
+        }
+        else
+        {
+            live1.SetActive(true);
+        }
     }
     public void GenerateAsteroidInScene()
     {
@@ -183,10 +259,20 @@ public class GameControl : MonoBehaviour
     }
     public void InputExitToMenu()
     {
+        if (spaceShip != null)
+        {
+            Destroy(spaceShip.gameObject);
+        }
+        ClearGameZone();
         gameMenu.enabled = false;
         mainMenu.enabled = true;
         isGaming = false;
         isGameOver = false;
+        live1.SetActive(true);
+        live2.SetActive(true);
+        live3.SetActive(true);
+        canvasGameOverPart.SetActive(false);
+        canvasGamingPart.SetActive(false);
     }
 
 
@@ -195,11 +281,22 @@ public class GameControl : MonoBehaviour
         Application.Quit();
     }
 
+    public void GameOver()
+    {
+        
+        isGameOver = true;
+        isGaming = true;
+        canvasGameOverPart.SetActive(true);
+        canvasGamingPart.SetActive(false);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         gameMenu.enabled = false;
         mainMenu.enabled = true;
+        canvasGamingPart.SetActive(false);
+        
     }
 
     
@@ -207,39 +304,25 @@ public class GameControl : MonoBehaviour
     void Update()
     {
 
-        if (isGaming)   //main Gaming loop
+        if (isGaming && !isGameOver)   //main Gaming loop
         {
+
+            labelScore.text = gameScene.Score.ToString();
 
             ShipControl sc = spaceShip.GetComponent<ShipControl>();
 
-            int ll1 = sc.Lives;
-            sc.Lives = -2;
 
             #region input and moving
 
             if (strikeTrg.IsPressed)
             {
                 InputStrike();
-                labelToch2.text = "pressed";
             }
-            else
-            {
-                labelToch2.text = "not";
-            }
+
 
             if (Input.touchCount > 0)
             {
                 
-
-                //Touch touch = Input.GetTouch(0);
-                //labelToch.text = touch.position.x +", "+touch.position.y;
-                ////labelToch2.text = Screen.width + ", " + Screen.height;
-                //Vector2 pos = touch.position;
-                //if (pos.y < Screen.height - Screen.height/4)
-                //{
-
-                //    //InputStrike();
-                //}
             }
 
             if (Input.GetMouseButton(0))
@@ -282,22 +365,7 @@ public class GameControl : MonoBehaviour
                     aster.Move();
                     aster.Rotate();
                 }
-                //AsteroidLarge asterL = t.gameObject.GetComponent<AsteroidLarge>();
-                //if (asterL != null)
-                //{
-                //    asterL.Move();
-                //}
-                //AsteroidMedium asterM = t.gameObject.GetComponent<AsteroidMedium>();
-                //if (asterM != null)
-                //{
-                //    asterM.Move();
-                //}
-                //AsteroidSmall asterS = t.gameObject.GetComponent<AsteroidSmall>();
-                //if (asterS != null)
-                //{
-                //    asterS.Move();
-                //}
-                //MoveGameObject(obj, )
+
             }
 
             #endregion
@@ -346,15 +414,15 @@ public class GameControl : MonoBehaviour
 
         if (isGameOver)
         {
-            
+
         }
     }
 }
 
 public class GameScene
 {
-    public int score { get; set;}
-    
+    private int score { get; set;}
+    public int Score { get { return score; } }
 
     public float timeStart { get; set; }
     public float timeNextGenAster { get; private set; }
@@ -373,6 +441,11 @@ public class GameScene
 
     }
 
+    public void AssScore(int value)
+    {
+        score += value;
+
+    }
     public void SetNextTimeGenAster()
     {
         timeNextGenAster += timeIntervalGenAster;

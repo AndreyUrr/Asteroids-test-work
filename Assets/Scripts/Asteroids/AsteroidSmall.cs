@@ -7,6 +7,10 @@ public class AsteroidSmall : Asteroid
 
     public override void Destroy()
     {
+        GameObject go = GameObject.Find("GameController");
+        GameControl gControl = go.GetComponent<GameControl>();
+        gControl.gameScene.AssScore(15);
+
         Destroy(this.gameObject);
     }
 

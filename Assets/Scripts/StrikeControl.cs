@@ -5,6 +5,8 @@ using UnityEngine;
 public class StrikeControl : MonoBehaviour
 {
 
+    
+
     public float liveTime = 2f;
     public float speed = 4f;
 
@@ -32,7 +34,7 @@ public class StrikeControl : MonoBehaviour
         
     }
 
-    
+
 
     // Update is called once per frame
     void Update()

@@ -22,6 +22,7 @@ public class Asteroid : Unit
     public override void Destroy()
     {
         Debug.Log("Destroy: в астероид попали!");
+
     }
 
     public void InitializeRandomAsteroid()
