@@ -43,12 +43,7 @@ public class Asteroid : Unit
     // Start is called before the first frame update
     void Start()
     {
-        //InitializeRandomAsteroid();
 
-        //force = new Vector3(Random.Range(-1f, 1f), Random.Range(-0.5f, 0.5f), 0);
-        //rotation = Quaternion.Euler(0, 0, Random.Range(0f, 359f));
-        //forceRotation = Random.Range(-20f, 20f);
-        //size = 0;
 
     }
 

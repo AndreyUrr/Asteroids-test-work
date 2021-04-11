@@ -394,7 +394,7 @@ public class GameScene
     public GameScene()
     {
         timeIntervalGenAster = 5f;
-        timeIntervalGenAlien = 3f;  //15
+        timeIntervalGenAlien = 15f;  //15
         score = 0;
         timeStart = Time.time;
         timeNextGenAster = timeStart + timeIntervalGenAster;
