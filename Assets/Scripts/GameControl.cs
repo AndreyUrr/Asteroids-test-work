@@ -44,9 +44,6 @@ public class GameControl : MonoBehaviour
     bool isGameOver = false;
     public bool IsGameOver { set { isGameOver = value; } get { return isGameOver; } }
     public GameScene gameScene;
-    //public Resolution[] resolutions = Screen.resolutions;
-    //public float sceneWidth = Screen.width;
-    //public float screenHeight = Screen.height;
 
     public Vector3 shipPos = new Vector3();
 
@@ -172,8 +169,6 @@ public class GameControl : MonoBehaviour
         {
             a.spaceShip = spaceShip;
         }
-
-
     }
 
     public void GenerateAsteroidInScene()
@@ -181,7 +176,6 @@ public class GameControl : MonoBehaviour
 
         int asterId = Random.Range(1, 3);
         int AsterType = Random.Range(1, 4);
-        //int typeAster = aster.idType;
         GameObject sceneAster;
 
         switch (AsterType)
@@ -207,7 +201,6 @@ public class GameControl : MonoBehaviour
             default:
                 return;
         }
-        //aster.objectInScene = sceneAster;
         sceneAster.transform.SetParent(sceneObjects.transform);
         Asteroid a = sceneAster.GetComponent<Asteroid>();
         if (a != null)
@@ -222,45 +215,13 @@ public class GameControl : MonoBehaviour
         obj.transform.Rotate(0, 0, rotation*Time.deltaTime*3);
     }
 
-    #region oldVersion
-    /// <summary>
-    /// Устарело, не использовать. Использовать метод юнита
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="force"></param>
-    //public void MoveGameObject(GameObject obj, Vector3 force)
-    //{
-    //    //obj.transform.position.z = 0;
-    //    obj.transform.position += force * 1.2f * Time.deltaTime;
-    //    Vector3 worldPos = Camera.main.WorldToScreenPoint(obj.transform.position);
-    //    worldPos.z = 1;
-    //    float allowance = 40f;
-    //    //Camera.main.ScreenToWorldPoint();
-    //    if (worldPos.x > Screen.width + allowance)
-    //    {
-    //        obj.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(worldPos.x - Screen.width, worldPos.y, worldPos.z));
-    //    }
-    //    if (worldPos.x < 0 - allowance)
-    //    {
-    //        obj.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(worldPos.x + Screen.width, worldPos.y, worldPos.z));
-    //    }
-    //    if (worldPos.y > Screen.height + allowance)
-    //    {
-    //        obj.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(worldPos.x, worldPos.y - Screen.height, worldPos.z));
-    //    }
-    //    if (worldPos.y < 0 - allowance)
-    //    {
-    //        obj.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(worldPos.x, worldPos.y + Screen.height, worldPos.z));
-    //    }
-
-    //    //ShipPos = spaceShip.transform.position;
-    //}
-    #endregion
     public void InputRun()
     {
-        aForceEngine += 0.2f;
-        shipSpeedVector += spaceShip.transform.up * 1.1f * aForceEngine * Time.deltaTime;
-        //shipSpeedVector += spaceShip.transform.
+        aForceEngine += 0.8f * Time.deltaTime;
+        if (shipSpeedVector.magnitude < 15)
+        {
+            shipSpeedVector += spaceShip.transform.up * 1.4f * aForceEngine * Time.deltaTime;
+        }
     }
     public void InputLeft()
     {
@@ -277,7 +238,6 @@ public class GameControl : MonoBehaviour
         {
             Strike();
             timeToStrike = Time.time + strikeDelay;
-            //Debug.Log("Время: " + Time.time + ", блокировка до времени: " + timeToStrike);
         }
     }
     public void Strike()
@@ -349,16 +309,6 @@ public class GameControl : MonoBehaviour
             }
 
 
-            if (Input.touchCount > 0)
-            {
-                
-            }
-
-            if (Input.GetMouseButton(0))
-            {
-                //InputStrike();
-            }
-
             if (Input.GetKey("d") || toRight.IsPressed)
             {
                 InputRight();
@@ -378,14 +328,12 @@ public class GameControl : MonoBehaviour
             }
             #endregion
 
-            //MoveGameObject(spaceShip, shipSpeedVector);
             ShipControl ship = spaceShip.GetComponent<ShipControl>();
             ship.Move(shipSpeedVector);
 
 
-            #region передвижение объектов новое
+            #region передвижение объектов
 
-            //var test = sceneObjects.GetComponentInChildren<Transform>();
             foreach (Transform t in sceneObjects.GetComponentInChildren<Transform>())
             {
                 Asteroid aster = t.gameObject.GetComponent<Asteroid>();
@@ -408,18 +356,11 @@ public class GameControl : MonoBehaviour
             #endregion
 
 
-            //foreach (var aster in gameScene.asteroids)
-            //{
-            //    MoveGameObject(aster.objectInScene, aster.force);
-            //    RotateGameObject(aster.objectInScene, aster.forceRotation);
-            //}
-
             if (Time.time > gameScene.timeNextGenAster)
             {
                 gameScene.SetNextTimeGenAster();
                 if (true)
                 {
-                    //gameScene.GenerateAsteroid();
                     GenerateAsteroidInScene();
                 }
             }
@@ -429,29 +370,6 @@ public class GameControl : MonoBehaviour
                 GenerateAlienInScene();
             }
 
-            #region old moving
-            //spaceShip.transform.position += shipSpeedVector * 0.1f;
-            //Vector3 worldPos = Camera.main.WorldToScreenPoint(spaceShip.transform.position);
-            ////Camera.main.ScreenToWorldPoint();
-            //if (worldPos.x > Screen.width)
-            //{
-            //    spaceShip.transform.position = Camera.main.ScreenToWorldPoint( new Vector3(worldPos.x - Screen.width, worldPos.y, worldPos.z));
-            //}
-            //if (worldPos.x < 0)
-            //{
-            //    spaceShip.transform.position = Camera.main.ScreenToWorldPoint( new Vector3(worldPos.x + Screen.width, worldPos.y, worldPos.z));
-            //}
-            //if (worldPos.y > Screen.height)
-            //{
-            //    spaceShip.transform.position = Camera.main.ScreenToWorldPoint( new Vector3(worldPos.x, worldPos.y - Screen.height, worldPos.z));
-            //}
-            //if (worldPos.y < 0)
-            //{
-            //    spaceShip.transform.position = Camera.main.ScreenToWorldPoint( new Vector3(worldPos.x, worldPos.y + Screen.height, worldPos.z));
-            //}
-
-            //ShipPos = spaceShip.transform.position;
-            #endregion
         }
 
         if (isGameOver)
@@ -471,18 +389,16 @@ public class GameScene
     public float timeNextGenALien { get; private set; }
     public float timeIntervalGenAster { get; private set; }
     public float timeIntervalGenAlien { get; private set; }
-    //public List<AsterOld> asteroids;
 
-    //public Alien alien;
+
     public GameScene()
     {
         timeIntervalGenAster = 5f;
-        timeIntervalGenAlien = 15f;
+        timeIntervalGenAlien = 3f;  //15
         score = 0;
         timeStart = Time.time;
         timeNextGenAster = timeStart + timeIntervalGenAster;
         timeNextGenALien = timeStart + timeIntervalGenAlien;
-        //alien = new Alien();
 
     }
 
@@ -500,105 +416,4 @@ public class GameScene
         timeNextGenAster += timeIntervalGenAster;
     }
 
-
-    /// <summary>
-    /// Generate random type of asteroid
-    /// </summary>
-    //public void GenerateAsteroid()
-    //{
-    //    int id = Random.Range(1, 4);
-    //    switch (id)
-    //    {
-    //        case 1:
-    //            asteroids.Add(new AsteroidLargeOld());
-    //            break;
-    //        case 2:
-    //            asteroids.Add(new AsteroidMediumOld());
-    //            break;
-    //        case 3:
-    //            asteroids.Add(new AsteroidSmallOld());
-    //            break;
-    //    }
-    //
-    //}
-    public void MoveAsteroids()
-    {
-        
-    }
-
-    /// <summary>
-    /// Clear asteroids out of game zone
-    /// </summary>
-    public void ClearAsteroids()
-    {
-        
-    }
-
-
 }
-
-
-
-//public class AsterOld
-//{
-//    public Vector3 position;
-//    public Vector3 force;   //force direction
-//    public Quaternion rotation;
-//    public float forceRotation;
-//    public float size;    //radius of asteroid
-//    public int idType = 0;
-//    public GameObject objectInScene;
-//    public AsterOld()
-//    {
-//        int id = Random.Range(1, 3);
-//        Vector3 screenPos;
-//        if (id == 1)
-//            screenPos = new Vector3(0, Random.Range(0f, Screen.height), 1);
-//        else
-//            screenPos = new Vector3(Random.Range(0f, Screen.width), 0, 1);
-//        position = Camera.main.ScreenToWorldPoint(screenPos);
-//        force = new Vector3(Random.Range(-1f, 1f), Random.Range(-0.5f, 0.5f), 0);
-//        rotation = Quaternion.Euler(0, 0, Random.Range(0f, 359f));
-//        forceRotation = Random.Range(-20f, 20f);
-//        size = 1;
-//    }
-//    public void Move()
-//    {
-
-//    }
-
-//    public virtual void Destroy()
-//    {
-//        Debug.Log("Destroy: в астероид попали!");
-//    }
-//}
-
-//public class AsteroidLargeOld : AsterOld
-//{
-//    public AsteroidLargeOld() : base()
-//    {
-//        size = 1;
-//        idType = 3;
-//    }
-//}
-//public class AsteroidMediumOld : AsterOld
-//{
-//    public AsteroidMediumOld() : base()
-//    {
-//        size = 0.5f;
-//        idType = 2;
-//    }
-//}
-//public class AsteroidSmallOld : AsterOld
-//{
-//    public AsteroidSmallOld() : base()
-//    {
-//        size = 0.25f;
-//        idType = 1;
-//    }
-//}
-
-//public class Alien
-//{
-    
-//}

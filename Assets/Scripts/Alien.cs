@@ -13,15 +13,18 @@ public class Alien : Unit
     private float timeIntChangeDirection = 3f;  //interval
     private float timeNextChangeDirection;
 
-    private float timeIntervalStrike = 5f;
+    private float timeIntervalStrike = 5f;  //5
     private float timeNextStrike;
-
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Destroy(this.gameObject);
-        //Destroy(collision.gameObject);
+        Asteroid aster = collision.gameObject.GetComponent<Asteroid>();
+        if (aster != null)
+        {
+            Destroy(aster.gameObject);
+            Destroy(this.gameObject);
+        }
     }
 
     public override void Destroy(int who = 0)
@@ -89,7 +92,6 @@ public class Alien : Unit
         //direction.Normalize();
         Quaternion rotation = Quaternion.LookRotation(new Vector3(0, 0, -1), direction);
         GameObject strike = Instantiate(gControl.pStrike, this.gameObject.transform.position, rotation) as GameObject;
-        //strike.transform.LookAt(spaceShip.transform, new Vector3(1,0,0));
         strike.transform.SetParent(gControl.sceneObjects.transform);
         strike.GetComponent<StrikeControl>().who = 1;
     }
@@ -118,7 +120,6 @@ public class Alien : Unit
         {
             ChangeDirection();
             timeNextChangeDirection += timeIntChangeDirection;
-            //Debug.Log("алиен изменил направление");
         }
 
         if (Time.time > timeNextStrike && !gControl.IsGameOver)

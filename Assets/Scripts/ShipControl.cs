@@ -9,10 +9,6 @@ public class ShipControl : Unit
     [SerializeField]
     private int lives = 3;
     public int Lives { get { return lives; } set { lives = value; } }
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    Debug.Log("Collision Enter");
-    //}
 
     public int GetLives()
     {
@@ -22,7 +18,6 @@ public class ShipControl : Unit
     private void OnTriggerEnter2D(Collider2D collision)
     {
         int who = 1;
-        Debug.Log("Ship: Collision entered.");
         StrikeControl obj = collision.GetComponent<StrikeControl>();
         if (obj != null)
         {

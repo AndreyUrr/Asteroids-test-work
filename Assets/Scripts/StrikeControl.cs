@@ -14,10 +14,7 @@ public class StrikeControl : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("коллизия активирована");
-        //GameObject obj = collision.gameObject;
         Asteroid aster = (Asteroid)collision.GetComponent<Asteroid>();
-        Debug.Log("коллизия сработала. объект " + aster);
         if (aster != null)
         {
             aster.Destroy(who);
