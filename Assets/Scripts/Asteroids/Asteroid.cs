@@ -19,7 +19,7 @@ public class Asteroid : Unit
     {
         Move(directionMove);
     }
-    public override void Destroy()
+    public override void Destroy(int who = 0)
     {
         Debug.Log("Destroy: в астероид попали!");
 

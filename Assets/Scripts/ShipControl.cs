@@ -26,11 +26,13 @@ public class ShipControl : Unit
         {
             lives--;
             gControl.LiveControl(lives);
+            Destroy(collision.gameObject);
         }
         else
         {
             gControl.GameOver();
             Destroy(this.gameObject);
+            Destroy(collision.gameObject);
         }
     }
 

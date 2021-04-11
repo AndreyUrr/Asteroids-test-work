@@ -10,12 +10,13 @@ public class GameControl : MonoBehaviour
 
     public Canvas mainMenu;
     public Canvas gameMenu;
-    public GameObject spaceShip;
+    private GameObject spaceShip;
     public GameObject sceneObjects;
 
 
     public GameObject canvasGamingPart;
     public GameObject canvasGameOverPart;
+    public GameObject canvasMainMenuPart;
 
     public GameObject pSpaceShip;
     public GameObject pAsterL1;
@@ -25,6 +26,7 @@ public class GameControl : MonoBehaviour
     public GameObject pAsterS1;
     public GameObject pAsterS2;
     public GameObject pStrike;
+    public GameObject pAlien;
     public UnityEngine.UI.Text labelScore;
 
     public GameObject live1;
@@ -59,10 +61,10 @@ public class GameControl : MonoBehaviour
     {
         shipSpeedVector = new Vector3(0, 0, 0);
 
-        //if (spaceShip != null)
-        //{
-        //    Destroy(spaceShip.gameObject);
-        //}
+        if (spaceShip != null)
+        {
+            Destroy(spaceShip.gameObject);
+        }
 
         foreach (Transform t in sceneObjects.GetComponentInChildren<Transform>())
         {
@@ -78,6 +80,14 @@ public class GameControl : MonoBehaviour
                 {
                     Destroy(sControl.gameObject);
                 }
+                else
+                {
+                    Alien alien = t.gameObject.GetComponent<Alien>();
+                    if (alien != null)
+                    {
+                        Destroy(alien.gameObject);
+                    }
+                }
             }
 
         }
@@ -85,20 +95,24 @@ public class GameControl : MonoBehaviour
 
     public void StartNewGame()
     {
+        ClearGameZone();
+
         mainMenu.enabled = false;
+        canvasMainMenuPart.SetActive(false);
         gameMenu.enabled = true;
         gameScene = new GameScene();
         isGaming = true;
         isGameOver = false;
         canvasGameOverPart.SetActive(false);
         canvasGamingPart.SetActive(true);
+        live1.SetActive(true);
+        live2.SetActive(true);
+        live3.SetActive(true);
 
-        ClearGameZone();
+        
 
-        if (spaceShip == null)
-        {
-            spaceShip = Instantiate(pSpaceShip, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0));
-        }
+
+        spaceShip = Instantiate(pSpaceShip, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0));
 
 
         for (int i = 0; i < 3; i++)
@@ -148,6 +162,20 @@ public class GameControl : MonoBehaviour
             live1.SetActive(true);
         }
     }
+
+    public void GenerateAlienInScene()
+    {
+        GameObject alien = Instantiate(pAlien) as GameObject;
+        alien.transform.SetParent(sceneObjects.transform);
+        Alien a = alien.GetComponent<Alien>();
+        if (a != null)
+        {
+            a.spaceShip = spaceShip;
+        }
+
+
+    }
+
     public void GenerateAsteroidInScene()
     {
 
@@ -273,6 +301,7 @@ public class GameControl : MonoBehaviour
         live3.SetActive(true);
         canvasGameOverPart.SetActive(false);
         canvasGamingPart.SetActive(false);
+        canvasMainMenuPart.SetActive(true);
     }
 
 
@@ -365,6 +394,14 @@ public class GameControl : MonoBehaviour
                     aster.Move();
                     aster.Rotate();
                 }
+                else
+                {
+                    Alien alien = t.gameObject.GetComponent<Alien>();
+                    if (alien != null)
+                    {
+                        alien.Move();
+                    }
+                }
 
             }
 
@@ -385,6 +422,11 @@ public class GameControl : MonoBehaviour
                     //gameScene.GenerateAsteroid();
                     GenerateAsteroidInScene();
                 }
+            }
+            if (Time.time > gameScene.timeNextGenALien)
+            {
+                gameScene.SetNextTimeGenALien();
+                GenerateAlienInScene();
             }
 
             #region old moving
@@ -426,17 +468,20 @@ public class GameScene
 
     public float timeStart { get; set; }
     public float timeNextGenAster { get; private set; }
+    public float timeNextGenALien { get; private set; }
     public float timeIntervalGenAster { get; private set; }
-
+    public float timeIntervalGenAlien { get; private set; }
     //public List<AsterOld> asteroids;
 
     //public Alien alien;
     public GameScene()
     {
         timeIntervalGenAster = 5f;
+        timeIntervalGenAlien = 3f;
         score = 0;
         timeStart = Time.time;
         timeNextGenAster = timeStart + timeIntervalGenAster;
+        timeNextGenALien = timeStart + timeIntervalGenAlien;
         //alien = new Alien();
 
     }
@@ -445,6 +490,10 @@ public class GameScene
     {
         score += value;
 
+    }
+    public void SetNextTimeGenALien()
+    {
+        timeNextGenALien += timeIntervalGenAlien;
     }
     public void SetNextTimeGenAster()
     {

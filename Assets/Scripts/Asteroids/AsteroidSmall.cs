@@ -5,11 +5,13 @@ using UnityEngine;
 public class AsteroidSmall : Asteroid
 {
 
-    public override void Destroy()
+    public override void Destroy(int who = 0)
     {
         GameObject go = GameObject.Find("GameController");
         GameControl gControl = go.GetComponent<GameControl>();
-        gControl.gameScene.AssScore(15);
+
+        if (who == 0)
+            gControl.gameScene.AssScore(15);
 
         Destroy(this.gameObject);
     }

@@ -9,6 +9,7 @@ public class StrikeControl : MonoBehaviour
 
     public float liveTime = 2f;
     public float speed = 4f;
+    public int who = 0; //0 - spaceShip, 1 - alien
 
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -19,12 +20,17 @@ public class StrikeControl : MonoBehaviour
         Debug.Log("коллизия сработала. объект " + aster);
         if (aster != null)
         {
-            aster.Destroy();
+            aster.Destroy(who);
             Destroy(this.gameObject);
         }
         else
         {
-            Debug.Log("поймалось что-то страшное. Это не астероид!");
+            Alien alien = collision.GetComponent<Alien>();
+            if (alien != null && who == 0)
+            {
+                alien.Destroy(who);
+                Destroy(this.gameObject);
+            }
         }
     }
 

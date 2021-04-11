@@ -5,6 +5,7 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public float kMoveSpeed = 1.2f;
+    [SerializeField]
     public Vector3 directionMove;
     public float forceRotation;
     public float allowance = 40f;  //допуск за границу экрана
@@ -41,7 +42,7 @@ public class Unit : MonoBehaviour
     {
         this.gameObject.transform.Rotate(0, 0, rotation * Time.deltaTime * 3);
     }
-    public virtual void Destroy()
+    public virtual void Destroy(int who = 0)
     {
         
     }
@@ -50,7 +51,7 @@ public class Unit : MonoBehaviour
     {
         directionMove = direction;
     }
-    protected void SetRandomDirection()
+    protected virtual void SetRandomDirection()
     {
         directionMove = new Vector3(Random.Range(-1f, 1f), Random.Range(-0.5f, 0.5f), 0);
     }

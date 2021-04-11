@@ -7,11 +7,13 @@ public class AsteroidMedium : Asteroid
 
 
 
-    public override void Destroy()
+    public override void Destroy(int who = 0)
     {
         GameObject go = GameObject.Find("GameController");
         GameControl gControl = go.GetComponent<GameControl>();
-        gControl.gameScene.AssScore(15);
+        if (who == 0)
+            gControl.gameScene.AssScore(15);
+
         if (gControl != null)
         {
             GameObject gameScene = this.gameObject.transform.parent.gameObject;
