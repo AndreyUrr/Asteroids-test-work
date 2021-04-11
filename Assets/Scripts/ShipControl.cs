@@ -21,18 +21,27 @@ public class ShipControl : Unit
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        int who = 1;
         Debug.Log("Ship: Collision entered.");
-        if (lives > 0)
+        StrikeControl obj = collision.GetComponent<StrikeControl>();
+        if (obj != null)
         {
-            lives--;
-            gControl.LiveControl(lives);
-            Destroy(collision.gameObject);
+            who = obj.who;
         }
-        else
+        if (who == 1)
         {
-            gControl.GameOver();
-            Destroy(this.gameObject);
-            Destroy(collision.gameObject);
+            if (lives > 0)
+            {
+                lives--;
+                gControl.LiveControl(lives);
+                Destroy(collision.gameObject);
+            }
+            else
+            {
+                gControl.GameOver();
+                Destroy(this.gameObject);
+                Destroy(collision.gameObject);
+            }
         }
     }
 
